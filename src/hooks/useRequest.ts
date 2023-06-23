@@ -17,7 +17,6 @@ export function useRequest<T>(endpoint: string) {
       const response = await request.get<T>(endpoint);
       setData(response.data);
     } catch (error) {
-      console.log(error);
       const errMensage = errorHandler(error);
       setError(errMensage);
     }
