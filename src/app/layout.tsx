@@ -6,8 +6,8 @@ import localFont from "next/font/local"
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'WHBL',
-  description: 'A luxury website about music',
+  title: 'Game Tracker',
+  description: 'A website to find your favorite game',
 }
 
 const fontHeading = localFont({
