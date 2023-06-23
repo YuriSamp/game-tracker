@@ -8,7 +8,8 @@ import { Switch } from '@/components/Switch'
 import { Button } from '@/components/Button'
 import { Select } from '@/components/Select'
 import { Input } from '@/components/Input'
-import { Pacman } from '@/components/Pacman'
+import { PacmanEats } from '@/components/Pacman'
+import { Loading } from '@/components/Loading'
 
 //Falta o skeleton
 //Falta responsividade
@@ -50,6 +51,14 @@ export default function Home() {
   }, [data, error])
 
 
+  const handleRetry = useCallback(() => {
+    refetch()
+    setErrorMensage('')
+  }, [refetch, setErrorMensage])
+
+
+  console.log({ isLoading, errorMensage })
+
   return (
     <main className={darkMode ? 'dark' : ''}>
       <div className='flex flex-col items-center min-h-screen text-black dark:text-white  bg-[#f9f5f2]  dark:bg-gray-800  relative'>
@@ -59,9 +68,7 @@ export default function Home() {
           </div>
           <Switch setDarkMode={setDarkMode} />
         </div>
-        <Pacman
-          darkMode={darkMode}
-        />
+        <PacmanEats />
         <h1 className='flex gap-5 text-center text-3xl sm:text-4xl md:text-5xl  xl:text-6xl font-Heading mt-5 '>
           <span className='text-red-500' >Find </span>
           <span className='text-orange-500' > your </span>
@@ -87,16 +94,15 @@ export default function Home() {
             </Button>
           </div>
         </section>
+        {isLoading ? <Loading /> : null}
         {!Boolean(errorMensage) ?
           <section className='mt-16 mb-32 mx-20 grid gap-y-10 sm:grid-cols-2 xl:grid-cols-3 gap-x-10 max-w-[1330px] '>
             {filteredGames.map(item => (
               <Card
                 key={item.id}
-                developer={item.developer}
                 title={item.title}
                 thumbnail={item.thumbnail}
-                publisher={item.publisher}
-                release_date={item.release_date}
+                short_description={item.short_description}
                 genre={item.genre}
               />
             ))}
@@ -107,7 +113,7 @@ export default function Home() {
               {errorMensage}
             </h2>
             <Button
-              onClick={refetch}
+              onClick={handleRetry}
             >
               Retry
             </Button>
