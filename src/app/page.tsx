@@ -10,13 +10,18 @@ import { Card } from '@/components/cards'
 
 export default function Home() {
 
-  const [searchTerm, setName] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
   const [games, setGames] = useState<Game[]>([])
   const [errorMensage, setErrorMensage] = useState('')
   const [filteredGenre, setFilteredGenre] = useState<string>('')
 
-  const setSearch = (e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)
+  const setSearch = (e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)
   const { data, error, isLoading, refetch } = useRequest<Game[]>('/data')
+
+  const reset = () => {
+    setSearchTerm('')
+    setFilteredGenre('')
+  }
 
   const genres = useMemo(() => {
     return Array.from(new Set(games.map(game => game.genre)))
@@ -41,26 +46,41 @@ export default function Home() {
 
 
   return (
-    <main className="flex flex-col items-center h-screen text-white">
-      <h1 className='pt-24 flex flex-col text-center text-7xl font-Heading text-red-600'>
-        <span>WELCOME <span className='text-yellow-400'>TO MY</span></span>
-        <span className='text-blue-600'>GAME TRACKER</span>
+    <main className="flex flex-col items-center text-white bg-[#020212]">
+      <h1 className='pt-24 flex flex-col text-center text-7xl font-Heading text-red-500'>
+        <span>WELCOME <span className='text-yellow-500'>TO MY</span></span>
+        <span className='text-pink-500'>GAME<span className='text-blue-500'> TRACKER</span></span>
       </h1>
-      <section className='pt-16 flex flex-col items-center'>
-        <h2 className='pb-8 text-xl text-center'>{`Insert the game you want to search`}</h2>
+      <section className='pt-16 flex flex-col gap-8 items-center'>
+        <h2 className='text-xl text-center'>{`Insert the game you want to search`}</h2>
         <input
           className='w-96 border border-white rounded-3xl bg-transparent h-10 px-5'
+          value={searchTerm}
           onChange={setSearch}
         />
+        <div className='flex gap-10'>
+          <select
+            className='py-6 bg-transparent w-40 border rounded-3xl px-6'
+            onChange={(e) => handleSelectGenre(e.target.value)}
+          >
+            {genres.map(genre => <option
+              key={genre}
+              value={genre}
+              className='text-black'
+            >
+              {genre}
+            </option>)}
+          </select>
+          <button
+            onClick={reset}
+            className='py-6 bg-transparent w-40 border border-white rounded-3xl px-6'
+          >
+            Reset
+          </button>
+        </div>
       </section>
-      <select
-        className='py-6 bg-red-500 w-40'
-        onChange={(e) => handleSelectGenre(e.target.value)}
-      >
-        {genres.map(genre => <option key={genre} value={genre}>{genre}</option>)}
-      </select>
       {!Boolean(errorMensage) ?
-        <section className='pt-40 pb-32 px-20 grid gap-y-5 sm:grid-cols-2 xl:grid-cols-3 justify-items-center w-full'>
+        <section className='pt-40 pb-32 px-20 grid gap-y-10 sm:grid-cols-2 xl:grid-cols-3 justify-items-center w-full'>
           {filteredGames.slice(0, 21).map(item => (
             <Card
               key={item.id}
