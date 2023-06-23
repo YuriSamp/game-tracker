@@ -11,9 +11,6 @@ import { Input } from '@/components/Input'
 import { PacmanEats } from '@/components/Pacman'
 import { Loading } from '@/components/Loading'
 
-//Falta o skeleton
-//Falta responsividade
-
 export default function Home() {
 
   const [searchTerm, setSearchTerm] = useState('')
@@ -56,20 +53,17 @@ export default function Home() {
     setErrorMensage('')
   }, [refetch, setErrorMensage])
 
-
-  console.log({ isLoading, errorMensage })
-
   return (
     <main className={darkMode ? 'dark' : ''}>
-      <div className='flex flex-col items-center min-h-screen text-black dark:text-white  bg-[#f9f5f2]  dark:bg-gray-800  relative'>
-        <div className='py-6 w-full sm:px-96 flex justify-between'>
+      <div className='flex flex-col items-center min-h-screen text-black dark:text-white  bg-[#f9f5f2]  dark:bg-gray-800  relative max-w-[2000px]'>
+        <div className='py-6 w-full px-6 sm:px-40 lg:px-52 xl:px-72 2xl:px-96 flex justify-between'>
           <div className='flex gap-2'>
             <span className='text-pink-500 font-Heading text-3xl'>GAME<span className='text-blue-500'> TRACKER</span></span>
           </div>
           <Switch setDarkMode={setDarkMode} />
         </div>
         <PacmanEats />
-        <h1 className='flex gap-5 text-center text-3xl sm:text-4xl md:text-5xl  xl:text-6xl font-Heading mt-5 '>
+        <h1 className='flex gap-5 text-center text-2xl sm:text-3xl md:text-4xl xl:text-6xl font-Heading mt-5 '>
           <span className='text-red-500' >Find </span>
           <span className='text-orange-500' > your </span>
           <span className='text-green-500' >favorite </span>
@@ -96,7 +90,7 @@ export default function Home() {
         </section>
         {isLoading ? <Loading /> : null}
         {!Boolean(errorMensage) ?
-          <section className='mt-16 mb-32 mx-20 grid gap-y-10 sm:grid-cols-2 xl:grid-cols-3 gap-x-10 max-w-[1330px] '>
+          <section className='mt-16 mb-32 mx-20 grid gap-y-10 md:grid-cols-2 xl:grid-cols-3 gap-x-10 max-w-[1330px] '>
             {filteredGames.map(item => (
               <Card
                 key={item.id}

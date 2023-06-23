@@ -16,7 +16,7 @@ export const Card = ({ thumbnail, title, genre, short_description }: Props) => {
 
 
   return (
-    <div className='w-[350px] flex flex-col items-center rounded-xl py-5 px-5 text-lg bg-white shadow-xl dark:bg-[#FDFDED] text-black relative`'>
+    <div className='w-[300px] xl:w-[350px] flex flex-col items-center rounded-xl py-5 px-5 text-lg bg-white shadow-xl dark:bg-[#FDFDED] text-black relative`'>
       <div className=' flex flex-col items-start'>
         <Image src={thumbnail} alt={title} width={300} height={200} className='rounded-2xl self-center w-full' />
         <div className='pt-3'>
