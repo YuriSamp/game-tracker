@@ -56,14 +56,14 @@ export default function Home() {
   return (
     <main className={darkMode ? 'dark' : ''}>
       <div className='flex flex-col items-center min-h-screen text-black dark:text-white  bg-[#f9f5f2]  dark:bg-gray-800  relative max-w-[2000px]'>
-        <div className='py-6 w-full px-6 sm:px-40 lg:px-52 xl:px-72 2xl:px-96 flex justify-between'>
+        <div className='py-6 w-full px-6 sm:px-40  xl:px-72 2xl:px-96 flex justify-between'>
           <div className='flex gap-2'>
             <span className='text-pink-500 font-Heading text-3xl'>GAME<span className='text-blue-500'> TRACKER</span></span>
           </div>
           <Switch setDarkMode={setDarkMode} />
         </div>
         <PacmanEats />
-        <h1 className='flex gap-5 text-center text-2xl sm:text-3xl md:text-4xl xl:text-6xl font-Heading mt-5 '>
+        <h1 className='flex gap-5 text-center text-xl sm:text-3xl md:text-4xl xl:text-6xl font-Heading mt-5 '>
           <span className='text-red-500' >Find </span>
           <span className='text-orange-500' > your </span>
           <span className='text-green-500' >favorite </span>

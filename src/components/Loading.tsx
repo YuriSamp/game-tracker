@@ -4,7 +4,7 @@ import React from 'react'
 
 export const Loading = () => {
   return (
-    <div className='relative flex-1 flex items-center'>
+    <div className='relative my-32 flex items-center'>
       <h2 className='mb-28 font-Heading text-xl'>Carregando</h2>
       <div className="loader">
         <div className="circles">
