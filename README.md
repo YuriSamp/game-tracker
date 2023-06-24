@@ -1,6 +1,6 @@
 # Game Tracker
 
-##Bem vindo ao meu projeto
+## Bem vindo ao meu projeto
 
 ![game tracker website](./public/dark%20mode.png)
 
