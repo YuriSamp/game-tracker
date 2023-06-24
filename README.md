@@ -4,21 +4,22 @@
 
 ![game tracker website](./public/dark-mode.png)
 
-## Tech stack
+## Tecnologias utilizadas
 
+- Pnpm
 - Next js
 - Axios
 - Typescript
 - Tailwind
 - React icons
 
-## Features
+## Funcionalidades
 
-- [ x ] Dark mode
+- [ x ] Modo escuro
 - [ x ] custom hook pra fazer a chamada a api
 - [ x ] Filtro por genero
 - [ x ] Reponsividade
-- [ x ] Tela de loading
+- [ x ] Tela de Carregamento
 - [ x ] Tratamento de erros da api
 - [ x ] Campo de busca
 - [ x ] Layout em colunas

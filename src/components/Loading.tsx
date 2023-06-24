@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export const Loading = () => {
   return (
     <div className='relative my-16 flex items-center'>
