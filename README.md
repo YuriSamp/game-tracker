@@ -2,7 +2,7 @@
 
 ## Bem vindo ao meu projeto
 
-![game tracker website](./public/dark%20mode.png)
+![game tracker website](./public/dark-mode.png)
 
 ## Tech stack
 
