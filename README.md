@@ -16,7 +16,7 @@
 ## Funcionalidades
 
 - [ x ] Modo escuro
-- [ x ] custom hook pra fazer a chamada a api
+- [ x ] Custom hook pra fazer a chamada a api
 - [ x ] Filtro por genero
 - [ x ] Reponsividade
 - [ x ] Tela de Carregamento
