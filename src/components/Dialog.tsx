@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import Link from 'next/link';
 
+
 type Props = {
   modalIsOpen: boolean
   setModalIsOpen: Dispatch<SetStateAction<boolean>>
