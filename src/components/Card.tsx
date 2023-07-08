@@ -5,14 +5,15 @@ import stc from 'string-to-color'
 import fontColorContrast from 'font-color-contrast'
 import { Rating } from './Rating'
 
-type Props = Pick<GameRanked, 'thumbnail' | 'title' | 'genre' | 'short_description' | 'id' | 'favorite' | 'gameReview'>
+type gameProps = Pick<GameRanked, 'thumbnail' | 'title' | 'genre' | 'short_description' | 'id' | 'favorite' | 'gameReview'>
 
-interface Props2 extends Props {
+interface CardProps extends gameProps {
   games: GameRanked[]
   setGames: Dispatch<SetStateAction<GameRanked[]>>
+  setModalIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export const Card = ({ thumbnail, title, genre, short_description, games, setGames, id, favorite, gameReview }: Props2) => {
+export const Card = ({ thumbnail, title, genre, short_description, games, setGames, id, favorite, gameReview, setModalIsOpen }: CardProps) => {
 
   const [bgColor, textColor] = useMemo(() => {
     const _bgColor = stc(genre)
@@ -44,6 +45,7 @@ export const Card = ({ thumbnail, title, genre, short_description, games, setGam
           setGames={setGames}
           favorite={favorite}
           gameReview={gameReview}
+          setModalIsOpen={setModalIsOpen}
         />
       </div>
     </div>

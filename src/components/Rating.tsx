@@ -1,21 +1,18 @@
 
 import { GameRanked } from '@/types/gameApi'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, } from 'react'
 import { BsHeart, BsHeartFill, BsStar, BsStarFill } from 'react-icons/bs'
-import { Dialog } from './Dialog'
-
 
 type Props = {
   favorite: boolean
   gameReview: number
   games: GameRanked[]
   setGames: Dispatch<SetStateAction<GameRanked[]>>
+  setModalIsOpen: Dispatch<SetStateAction<boolean>>
   id: number
 }
 
-export const Rating = ({ games, setGames, id, favorite, gameReview }: Props) => {
-
-  const [modalIsOpen, setModalIsOpen] = useState(false)
+export const Rating = ({ games, setGames, id, favorite, gameReview, setModalIsOpen }: Props) => {
 
   const stars = new Array(4).fill('')
 
@@ -71,10 +68,6 @@ export const Rating = ({ games, setGames, id, favorite, gameReview }: Props) => 
             />
         ))}
       </div>
-      <Dialog
-        modalIsOpen={modalIsOpen}
-        setModalIsOpen={setModalIsOpen}
-      />
     </div>
   )
 }

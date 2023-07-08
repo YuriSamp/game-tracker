@@ -1,3 +1,5 @@
+const { mauve, violet, red, blackA } = require('@radix-ui/colors');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: 'class',
@@ -8,6 +10,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        ...mauve,
+        ...violet,
+        ...red,
+        ...blackA,
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':

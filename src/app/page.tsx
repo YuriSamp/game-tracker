@@ -22,6 +22,7 @@ export default function Home() {
   const [favorite, setFavorite] = useState(false)
   const [darkMode, setDarkMode] = useState(true)
   const [ranked, setRanked] = useState(true)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
 
   const { data, error, isLoading, refetch } = useRequest<Game[]>('/data')
 
@@ -120,13 +121,14 @@ export default function Home() {
             </Button>
           </div>
         </section>
-        {isLoading ? <Loading /> : null}
+        {isLoading ?
+          <Loading />
+          : <RatingFilter
+            ranked={ranked}
+            setRanked={setRanked}
+          />}
         {!Boolean(errorMensage) ?
           <>
-            <RatingFilter
-              ranked={ranked}
-              setRanked={setRanked}
-            />
             <section className='mt-8 mb-32 mx-20 grid gap-y-10 md:grid-cols-2 xl:grid-cols-3 gap-x-10 max-w-[1330px] '>
               {filteredGames.map(item => (
                 <Card
@@ -140,6 +142,7 @@ export default function Home() {
                   setGames={setGames}
                   favorite={item.favorite}
                   gameReview={item.gameReview}
+                  setModalIsOpen={setModalIsOpen}
                 />
               ))}
             </section>
@@ -157,6 +160,10 @@ export default function Home() {
           </section>
         }
       </div>
+      <Dialog
+        modalIsOpen={modalIsOpen}
+        setModalIsOpen={setModalIsOpen}
+      />
     </main>
   )
 }
