@@ -1,6 +1,6 @@
 
 import { GameRanked } from '@/types/gameApi'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import { BsHeart, BsHeartFill, BsStar, BsStarFill } from 'react-icons/bs'
 
 type Props = {
@@ -11,10 +11,8 @@ type Props = {
   id: number
 }
 
-export const Rating = ({ games, setGames, id, favorite }: Props) => {
-
-  const [rating, setRating] = useState(0)
-  const starsFill = new Array(4).fill('')
+export const Rating = ({ games, setGames, id, favorite, gameReview }: Props) => {
+  const stars = new Array(4).fill('')
 
   const handleFavoriteGame = () => {
     const favoiriteGames = games.map(game => {
@@ -24,7 +22,17 @@ export const Rating = ({ games, setGames, id, favorite }: Props) => {
       return game
     }
     )
-    console.log(games.filter(game => game.id === id))
+    setGames(favoiriteGames)
+  }
+
+  const handleRating = (value: number) => {
+    const favoiriteGames = games.map(game => {
+      if (game.id === id) {
+        game.gameReview = value
+      }
+      return game
+    }
+    )
     setGames(favoiriteGames)
   }
 
@@ -42,18 +50,18 @@ export const Rating = ({ games, setGames, id, favorite }: Props) => {
         />
       }
       <div className='flex gap-1'>
-        {starsFill.map((_, i) => (
-          i + 1 > rating ?
+        {stars.map((_, i) => (
+          i + 1 > gameReview ?
             <BsStar
               key={i}
               className='w-6 h-6 cursor-pointer'
-              onClick={() => setRating(i + 1)}
+              onClick={() => handleRating(i + 1)}
             />
             :
             <BsStarFill
               key={i}
               className='w-6 h-6 text-yellow-400 cursor-pointer'
-              onClick={() => setRating(i + 1)}
+              onClick={() => handleRating(i + 1)}
             />
         ))}
       </div>

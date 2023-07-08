@@ -10,6 +10,7 @@ import { Select } from '@/components/Select'
 import { Input } from '@/components/Input'
 import { PacmanEats } from '@/components/Pacman'
 import { Loading } from '@/components/Loading'
+import { RatingFilter } from '@/components/RatingFilter'
 
 export default function Home() {
 
@@ -19,36 +20,9 @@ export default function Home() {
   const [filteredGenre, setFilteredGenre] = useState<string>('')
   const [favorite, setFavorite] = useState(false)
   const [darkMode, setDarkMode] = useState(true)
+  const [ranked, setRanked] = useState(true)
 
   const { data, error, isLoading, refetch } = useRequest<Game[]>('/data')
-
-  const reset = () => {
-    setSearchTerm('')
-    setFilteredGenre('')
-  }
-
-  const genres = useMemo(() => {
-    return ['', ...Array.from(new Set(games.map(game => game.genre)))]
-  }, [games])
-
-  const filteredGames = useMemo(() => {
-    const lowerSearchTerm = searchTerm.toLocaleLowerCase()
-    if (favorite) {
-      return games.filter(game => {
-        return game.title.toLocaleLowerCase().includes(lowerSearchTerm)
-          && game.genre.includes(filteredGenre)
-      }).filter(game => game.favorite === true)
-    }
-    return games.filter(game => {
-      return game.title.toLocaleLowerCase().includes(lowerSearchTerm)
-        && game.genre.includes(filteredGenre)
-    })
-
-  }, [games, searchTerm, filteredGenre, favorite])
-
-  const handleSelectGenre = useCallback((genre: string) => {
-    setFilteredGenre(genre)
-  }, [])
 
   useEffect(() => {
     const newData = data.map(property => {
@@ -63,6 +37,35 @@ export default function Home() {
     setErrorMensage(error)
   }, [data, error])
 
+  const genres = useMemo(() => {
+    return ['', ...Array.from(new Set(games.map(game => game.genre)))]
+  }, [games])
+
+  const filteredGames = useMemo(() => {
+    const lowerSearchTerm = searchTerm.toLocaleLowerCase()
+
+    const _filteredGames = games.filter(game => {
+      return game.title.toLocaleLowerCase().includes(lowerSearchTerm)
+        && game.genre.includes(filteredGenre)
+    }).sort((a, b) => ranked ? b.gameReview - a.gameReview : a.gameReview - b.gameReview)
+
+    if (favorite) {
+      return _filteredGames.filter(game => game.favorite === true)
+    }
+
+    return _filteredGames
+
+  }, [games, searchTerm, filteredGenre, favorite, ranked])
+
+  const handleSelectGenre = useCallback((genre: string) => {
+    setFilteredGenre(genre)
+  }, [])
+
+
+  const reset = () => {
+    setSearchTerm('')
+    setFilteredGenre('')
+  }
 
   const handleRetry = useCallback(() => {
     refetch()
@@ -118,22 +121,28 @@ export default function Home() {
         </section>
         {isLoading ? <Loading /> : null}
         {!Boolean(errorMensage) ?
-          <section className='mt-16 mb-32 mx-20 grid gap-y-10 md:grid-cols-2 xl:grid-cols-3 gap-x-10 max-w-[1330px] '>
-            {filteredGames.map(item => (
-              <Card
-                key={item.id}
-                id={item.id}
-                title={item.title}
-                thumbnail={item.thumbnail}
-                short_description={item.short_description}
-                genre={item.genre}
-                games={games}
-                setGames={setGames}
-                favorite={item.favorite}
-                gameReview={item.gameReview}
-              />
-            ))}
-          </section>
+          <>
+            <RatingFilter
+              ranked={ranked}
+              setRanked={setRanked}
+            />
+            <section className='mt-8 mb-32 mx-20 grid gap-y-10 md:grid-cols-2 xl:grid-cols-3 gap-x-10 max-w-[1330px] '>
+              {filteredGames.map(item => (
+                <Card
+                  key={item.id}
+                  id={item.id}
+                  title={item.title}
+                  thumbnail={item.thumbnail}
+                  short_description={item.short_description}
+                  genre={item.genre}
+                  games={games}
+                  setGames={setGames}
+                  favorite={item.favorite}
+                  gameReview={item.gameReview}
+                />
+              ))}
+            </section>
+          </>
           :
           <section className='mt-32 flex flex-col items-center text-center mx-48 gap-10'>
             <h2 className='text-6xl font-Heading'>
