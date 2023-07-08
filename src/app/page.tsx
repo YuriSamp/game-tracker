@@ -11,6 +11,7 @@ import { Input } from '@/components/Input'
 import { PacmanEats } from '@/components/Pacman'
 import { Loading } from '@/components/Loading'
 import { RatingFilter } from '@/components/RatingFilter'
+import { Dialog } from '@/components/Dialog'
 
 export default function Home() {
 
@@ -77,6 +78,7 @@ export default function Home() {
     setFavorite(prev => !prev)
   }
 
+
   return (
     <main className={darkMode ? 'dark' : ''}>
       <div className='flex flex-col items-center min-h-screen text-black dark:text-white  bg-[#f9f5f2]  dark:bg-gray-800  relative max-w-[2000px]'>
@@ -94,7 +96,6 @@ export default function Home() {
           <span className='text-yellow-500'>game</span>
         </h1>
         <section className='flex flex-col gap-8 items-center mt-12 w-full'>
-
           <Input
             onChange={setSearchTerm}
             placeholder='Fall guys'

@@ -1,7 +1,9 @@
 
 import { GameRanked } from '@/types/gameApi'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { BsHeart, BsHeartFill, BsStar, BsStarFill } from 'react-icons/bs'
+import { Dialog } from './Dialog'
+
 
 type Props = {
   favorite: boolean
@@ -12,6 +14,9 @@ type Props = {
 }
 
 export const Rating = ({ games, setGames, id, favorite, gameReview }: Props) => {
+
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+
   const stars = new Array(4).fill('')
 
   const handleFavoriteGame = () => {
@@ -26,14 +31,15 @@ export const Rating = ({ games, setGames, id, favorite, gameReview }: Props) => 
   }
 
   const handleRating = (value: number) => {
-    const favoiriteGames = games.map(game => {
-      if (game.id === id) {
-        game.gameReview = value
-      }
-      return game
-    }
-    )
-    setGames(favoiriteGames)
+    setModalIsOpen(true)
+    // const favoiriteGames = games.map(game => {
+    //   if (game.id === id) {
+    //     game.gameReview = value
+    //   }
+    //   return game
+    // }
+    // )
+    // setGames(favoiriteGames)
   }
 
   return (
@@ -65,6 +71,10 @@ export const Rating = ({ games, setGames, id, favorite, gameReview }: Props) => 
             />
         ))}
       </div>
+      <Dialog
+        modalIsOpen={modalIsOpen}
+        setModalIsOpen={setModalIsOpen}
+      />
     </div>
   )
 }
