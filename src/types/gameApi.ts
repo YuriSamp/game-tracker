@@ -11,3 +11,8 @@ export type Game = {
   title: string;
   genre: string;
 };
+
+export interface GameRanked extends Game {
+  favorite: boolean;
+  gameReview: number;
+}

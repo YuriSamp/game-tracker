@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Game } from '@/types/gameApi'
+import { Game, GameRanked } from '@/types/gameApi'
 import { useRequest } from '@/hooks/useRequest'
 import { Card } from '@/components/Card'
 import { Switch } from '@/components/Switch'
@@ -14,9 +14,10 @@ import { Loading } from '@/components/Loading'
 export default function Home() {
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [games, setGames] = useState<Game[]>([])
+  const [games, setGames] = useState<GameRanked[]>([])
   const [errorMensage, setErrorMensage] = useState('')
   const [filteredGenre, setFilteredGenre] = useState<string>('')
+  const [favorite, setFavorite] = useState(false)
   const [darkMode, setDarkMode] = useState(true)
 
   const { data, error, isLoading, refetch } = useRequest<Game[]>('/data')
@@ -32,18 +33,33 @@ export default function Home() {
 
   const filteredGames = useMemo(() => {
     const lowerSearchTerm = searchTerm.toLocaleLowerCase()
+    if (favorite) {
+      return games.filter(game => {
+        return game.title.toLocaleLowerCase().includes(lowerSearchTerm)
+          && game.genre.includes(filteredGenre)
+      }).filter(game => game.favorite === true)
+    }
     return games.filter(game => {
       return game.title.toLocaleLowerCase().includes(lowerSearchTerm)
         && game.genre.includes(filteredGenre)
     })
-  }, [games, searchTerm, filteredGenre])
+
+  }, [games, searchTerm, filteredGenre, favorite])
 
   const handleSelectGenre = useCallback((genre: string) => {
     setFilteredGenre(genre)
   }, [])
 
   useEffect(() => {
-    setGames(data)
+    const newData = data.map(property => {
+      return {
+        ...property,
+        favorite: false,
+        gameReview: 0,
+      }
+    })
+
+    setGames(newData)
     setErrorMensage(error)
   }, [data, error])
 
@@ -52,6 +68,11 @@ export default function Home() {
     refetch()
     setErrorMensage('')
   }, [refetch, setErrorMensage])
+
+
+  const onlyFavorite = () => {
+    setFavorite(prev => !prev)
+  }
 
   return (
     <main className={darkMode ? 'dark' : ''}>
@@ -70,12 +91,19 @@ export default function Home() {
           <span className='text-yellow-500'>game</span>
         </h1>
         <section className='flex flex-col gap-8 items-center mt-12 w-full'>
+
           <Input
             onChange={setSearchTerm}
             placeholder='Fall guys'
             value={searchTerm}
           />
           <div className='flex flex-col sm:flex-row gap-5 sm:gap-10'>
+            <button
+              className={`py-3 w-40 border rounded-xl px-6 border-black dark:border-transparent ${favorite ? 'bg-red-500 dark:bg-red-500 text-white' : 'dark:bg-[#f9f5f2]  bg-transparent text-black'} `}
+              onClick={onlyFavorite}
+            >
+              Favorites
+            </button>
             <Select
               onChange={handleSelectGenre}
               value={filteredGenre}
@@ -94,10 +122,15 @@ export default function Home() {
             {filteredGames.map(item => (
               <Card
                 key={item.id}
+                id={item.id}
                 title={item.title}
                 thumbnail={item.thumbnail}
                 short_description={item.short_description}
                 genre={item.genre}
+                games={games}
+                setGames={setGames}
+                favorite={item.favorite}
+                gameReview={item.gameReview}
               />
             ))}
           </section>

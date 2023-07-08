@@ -1,12 +1,18 @@
-import { Game } from '@/types/gameApi'
+import { GameRanked } from '@/types/gameApi'
 import Image from 'next/image'
-import { useMemo } from 'react'
+import { Dispatch, SetStateAction, useMemo } from 'react'
 import stc from 'string-to-color'
 import fontColorContrast from 'font-color-contrast'
+import { Rating } from './Rating'
 
-type Props = Pick<Game, 'thumbnail' | 'title' | 'genre' | 'short_description'>
+type Props = Pick<GameRanked, 'thumbnail' | 'title' | 'genre' | 'short_description' | 'id' | 'favorite' | 'gameReview'>
 
-export const Card = ({ thumbnail, title, genre, short_description }: Props) => {
+interface Props2 extends Props {
+  games: GameRanked[]
+  setGames: Dispatch<SetStateAction<GameRanked[]>>
+}
+
+export const Card = ({ thumbnail, title, genre, short_description, games, setGames, id, favorite, gameReview }: Props2) => {
 
   const [bgColor, textColor] = useMemo(() => {
     const _bgColor = stc(genre)
@@ -16,9 +22,9 @@ export const Card = ({ thumbnail, title, genre, short_description }: Props) => {
 
 
   return (
-    <div className='w-[300px] xl:w-[350px] flex flex-col items-center rounded-xl py-5 px-5 text-lg bg-white shadow-xl dark:bg-[#FDFDED] text-black relative`'>
-      <div className=' flex flex-col items-start'>
-        <Image src={thumbnail} alt={title} width={300} height={200} className='rounded-2xl self-center w-full' />
+    <div className='w-[300px] xl:w-[350px] flex flex-col items-center justify-between rounded-xl py-5 px-5 text-lg bg-white shadow-xl dark:bg-[#FDFDED] text-black relative select-none`'>
+      <div className='flex flex-col items-start'>
+        <Image src={thumbnail} alt={title} width={300} height={200} className='rounded-2xl self-center w-full select-none' />
         <div className='pt-3'>
           <p className='text-xl font-MontSerrat font-bold max-w-[300px]  '>{title}</p>
         </div>
@@ -30,6 +36,15 @@ export const Card = ({ thumbnail, title, genre, short_description }: Props) => {
         <p>
           {short_description}
         </p>
+      </div>
+      <div className='items-end flex justify-between w-full mt-3'>
+        <Rating
+          id={id}
+          games={games}
+          setGames={setGames}
+          favorite={favorite}
+          gameReview={gameReview}
+        />
       </div>
     </div>
   )
