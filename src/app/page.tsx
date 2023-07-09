@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCollection } from 'react-firebase-hooks/firestore'
 import { Game, GameRanked } from '@/types/gameApi'
 import { useRequest } from '@/hooks/useRequest'
 import { Card } from '@/components/Card'
@@ -12,6 +13,15 @@ import { PacmanEats } from '@/components/Pacman'
 import { Loading } from '@/components/Loading'
 import { RatingFilter } from '@/components/RatingFilter'
 import { Dialog } from '@/components/Dialog'
+import { useDb } from '@/hooks/useDb'
+import { collection } from 'firebase/firestore'
+import { db } from '@/lib/firebase/config'
+
+type dbType = {
+  favorite: boolean
+  gameReview: number
+  id: number
+}
 
 export default function Home() {
 
@@ -25,6 +35,7 @@ export default function Home() {
   const [modalIsOpen, setModalIsOpen] = useState(false)
 
   const { data, error, isLoading, refetch } = useRequest<Game[]>('/data')
+  const [value, Iserror] = useCollection(collection(db, 'games'));
 
   useEffect(() => {
     const newData = data.map(property => {
@@ -35,8 +46,22 @@ export default function Home() {
       }
     })
 
-    setGames(newData)
+    const dbValues = value?.docs.map(doc => doc.data()) as unknown as dbType[]
+
+    const newData2 = newData.map(game => {
+      for (let i = 0; i < dbValues.length; i++) {
+        if (game.id === dbValues[i].id) {
+          game.favorite = dbValues[i].favorite
+          game.gameReview = dbValues[i].gameReview
+        }
+      }
+      return game
+    })
+
+
+    setGames(newData2)
     setErrorMensage(error)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, error])
 
   const genres = useMemo(() => {

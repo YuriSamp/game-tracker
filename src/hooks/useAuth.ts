@@ -5,6 +5,13 @@ import {
 import { auth } from '@/lib/firebase/config';
 import { setCookie } from 'nookies';
 
+const createCookie = (JWT: string) => {
+  setCookie(null, 'JWTAuth', JWT as string, {
+    maxAge: 30 * 24 * 60 * 60,
+    path: '/',
+  });
+};
+
 export const useAuth = () => {
   const [createUserWithEmailAndPassword] =
     useCreateUserWithEmailAndPassword(auth);
@@ -14,11 +21,11 @@ export const useAuth = () => {
     try {
       const user = await createUserWithEmailAndPassword(email, password);
       const JWT = await user?.user.getIdToken();
-
-      setCookie(null, 'JWTAuth', JWT as string, {
-        maxAge: 30 * 24 * 60 * 60,
-        path: '/',
-      });
+      if (JWT) {
+        createCookie(JWT);
+        return;
+      }
+      throw Error('Sem JWT pra você');
     } catch (error) {}
   };
 
@@ -27,10 +34,11 @@ export const useAuth = () => {
       const user = await signInWithEmailAndPassword(email, password);
       const JWT = await user?.user.getIdToken();
 
-      setCookie(null, 'JWTAuth', JWT as string, {
-        maxAge: 30 * 24 * 60 * 60,
-        path: '/',
-      });
+      if (JWT) {
+        createCookie(JWT);
+        return;
+      }
+      throw Error('Sem JWT pra você');
     } catch (error) {}
   };
 
