@@ -33,10 +33,15 @@ module.exports = {
           from: { opacity: 0, transform: 'translate(-50%, -48%) scale(0.96)' },
           to: { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
         },
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-9deg) scale(1.3)' },
+          '50%': { transform: 'rotate(9deg) scale(1.3)' },
+        },
       },
       animation: {
         overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        wiggle: 'wiggle 1s ease-in-out infinite',
       },
     },
   },

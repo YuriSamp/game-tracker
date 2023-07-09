@@ -65,12 +65,12 @@ export const Rating = ({ games, setGames, id, favorite, gameReview, setModalIsOp
     <div className='items-end flex justify-between w-full mt-3'>
       {favorite ?
         <BsHeartFill
-          className='w-6 h-6 cursor-pointer text-red-600'
+          className='w-6 h-6 cursor-pointer text-red-600 hover:animate-wiggle'
           onClick={handleFavoriteGame}
         />
         :
         <BsHeart
-          className='w-6 h-6 cursor-pointer'
+          className='w-6 h-6 cursor-pointer hover:animate-wiggle'
           onClick={handleFavoriteGame}
         />
       }
