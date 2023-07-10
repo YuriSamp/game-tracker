@@ -21,15 +21,16 @@ export const errorHandler = (error: unknown) => {
         (knowError) => knowError === error.response?.status
       ).length > 0;
     if (listedErrors) {
-      errorMensage = 'O servidor fahou em responder, tente recarregar a página';
+      errorMensage = 'The server failed to respond, try reloading the page';
       return errorMensage;
     }
     if (error.code === TIMEOUT_ERROR) {
-      errorMensage = 'O servidor demorou para responder, tente mais tarde';
+      errorMensage =
+        'The server took a while to respond, please try again later';
       return errorMensage;
     }
     errorMensage =
-      'O servidor não conseguirá responder por agora, tente voltar novamente mais tarde';
+      'The server will not be able to respond for now, please try to come back later.';
   }
   return errorMensage;
 };
