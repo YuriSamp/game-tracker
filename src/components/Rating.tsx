@@ -48,7 +48,11 @@ export const Rating = ({ games, setGames, id, favorite, gameReview, setModalIsOp
 
     const favoiriteGames = games.map(game => {
       if (game.id === id) {
-        game.gameReview = value
+        if (game.gameReview === value) {
+          game.gameReview = 0
+        } else {
+          game.gameReview = value
+        }
       }
       return game
     })
