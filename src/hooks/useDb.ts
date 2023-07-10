@@ -53,13 +53,18 @@ export const useDb = () => {
       };
 
       try {
-        if (firestoreGames?.filter((game) => game.id === id).length === 1) {
+        if (
+          firestoreGames?.filter((game) => game.id === id && game.JWT === JWT)
+            .length === 1
+        ) {
           const docId = firestoreGames?.filter((game) => game.id === id)[0].id;
-          await updateDoc(doc(db, 'games', String(docId)), dbEntry);
+          const firebaseDocID = String(docId) + JWT.slice(-10, -1);
+          await updateDoc(doc(db, 'games', firebaseDocID), dbEntry);
           return;
         }
 
-        await setDoc(doc(db, 'games', String(id)), dbEntry);
+        const firebaseDocID = String(id) + JWT.slice(-10, -1);
+        await setDoc(doc(db, 'games', firebaseDocID), dbEntry);
       } catch (error) {
         console.log(error);
       }
