@@ -1,9 +1,13 @@
 import {
-  useCreateUserWithEmailAndPassword,
-  useSignInWithEmailAndPassword,
-} from 'react-firebase-hooks/auth';
+  AuthError,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  UserCredential,
+} from 'firebase/auth';
+
 import { auth } from '@/lib/firebase/config';
 import { setCookie } from 'nookies';
+import { useCallback, useState } from 'react';
 
 const createCookie = (JWT: string) => {
   setCookie(null, 'JWTAuth', JWT as string, {
@@ -13,34 +17,36 @@ const createCookie = (JWT: string) => {
 };
 
 export const useAuth = () => {
-  const [createUserWithEmailAndPassword] =
-    useCreateUserWithEmailAndPassword(auth);
-  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+  const [error, setError] = useState<any>();
+  const [user, setUser] = useState<UserCredential>();
 
-  const createUser = async (email: string, password: string) => {
+  const createUser = useCallback(async (email: string, password: string) => {
+    setError(undefined);
     try {
-      const user = await createUserWithEmailAndPassword(email, password);
+      const user = await createUserWithEmailAndPassword(auth, email, password);
       const JWT = await user?.user.getIdToken();
-      if (JWT) {
-        createCookie(JWT);
-        return;
-      }
-      throw Error('Sem JWT pra você');
-    } catch (error) {}
-  };
+      createCookie(JWT);
+      setUser(user);
 
-  const login = async (email: string, password: string) => {
+      return user;
+    } catch (error) {
+      setError(error as AuthError);
+    }
+  }, []);
+
+  const login = useCallback(async (email: string, password: string) => {
+    setError(undefined);
     try {
-      const user = await signInWithEmailAndPassword(email, password);
+      const user = await signInWithEmailAndPassword(auth, email, password);
       const JWT = await user?.user.getIdToken();
+      createCookie(JWT);
+      setUser(user);
 
-      if (JWT) {
-        createCookie(JWT);
-        return;
-      }
-      throw Error('Sem JWT pra você');
-    } catch (error) {}
-  };
+      return user;
+    } catch (err) {
+      setError(err as AuthError);
+    }
+  }, []);
 
-  return { login, createUser };
+  return { login, createUser, user, error };
 };

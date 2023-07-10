@@ -12,7 +12,7 @@ import { signInForm } from '@/lib/validations/authForm'
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth()
+  const { login, error } = useAuth()
   const router = useRouter()
 
 
@@ -20,6 +20,9 @@ const SignIn = () => {
     e.preventDefault()
     const credentials = signInForm.parse({ email, password })
     await login(credentials.email, credentials.password)
+    if (error) {
+      return
+    }
     router.push('/')
   }
 

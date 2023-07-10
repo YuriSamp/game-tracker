@@ -12,13 +12,16 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const { createUser } = useAuth()
+  const { createUser, error } = useAuth()
   const router = useRouter()
 
   const handleAuth = async (e: FormEvent) => {
     e.preventDefault()
     const credentials = signUpForm.parse({ email, password, passwordConfirm })
     await createUser(credentials.email, credentials.password)
+    if (error) {
+      return
+    }
     router.push('/')
   }
 
