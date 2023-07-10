@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { RetturnButton } from '@/components/ReturnButton'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
-import { signInForm } from '@/lib/validations/authForm'
+import { signInForm, signInFormType } from '@/lib/validations/authForm'
 import { toast } from 'react-toastify'
 import PasswordInput from '@/components/PasswordInput'
 
@@ -20,8 +20,15 @@ const SignIn = () => {
 
   const handleAuth = async (e: FormEvent) => {
     e.preventDefault()
-    const credentials = signInForm.parse({ email, password })
-    await login(credentials.email, credentials.password)
+    const credentials = signInForm.safeParse({ email, password })
+    if (!credentials.success) {
+      const fieldErrors = credentials.error.formErrors.fieldErrors
+      const errorArray: readonly string[] = Object.keys(fieldErrors)
+      toast.error(fieldErrors[errorArray.at(0) as keyof signInFormType]?.at(0))
+      return
+    }
+
+    await login(credentials.data.email, credentials.data.password)
     if (error) {
       toast.error(error)
       return

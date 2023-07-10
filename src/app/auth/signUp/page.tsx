@@ -4,7 +4,7 @@ import Image from 'next/image'
 import React, { FormEvent, useState } from 'react'
 import Pacman from '../../icon.png'
 import { RetturnButton } from '@/components/ReturnButton'
-import { signUpForm } from '@/lib/validations/authForm'
+import { signUpForm, signUpFormType } from '@/lib/validations/authForm'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
@@ -19,8 +19,16 @@ const SignUp = () => {
 
   const handleAuth = async (e: FormEvent) => {
     e.preventDefault()
-    const credentials = signUpForm.parse({ email, password, passwordConfirm })
-    await createUser(credentials.email, credentials.password)
+    const credentials = signUpForm.safeParse({ email, password, passwordConfirm })
+
+    if (!credentials.success) {
+      const fieldErrors = credentials.error.formErrors.fieldErrors
+      const errorArray: readonly string[] = Object.keys(fieldErrors)
+      toast.error(fieldErrors[errorArray.at(0) as keyof signUpFormType]?.at(0))
+      return
+    }
+
+    await createUser(credentials.data.email, credentials.data.password)
     if (error) {
       toast.error(error)
       return
@@ -47,14 +55,12 @@ const SignUp = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           <label className='self-start'> Password</label>
-          <input
-            className='mb-6 mt-1 border outline-none border-black rounded-md p-2'
-            onChange={(e) => setPassword(e.target.value)}
+          <PasswordInput
+            setter={setPassword}
           />
           <label className='self-start'> Confirm Password</label>
-          <input
-            className='mb-6 mt-1 border outline-none border-black rounded-md p-2'
-            onChange={(e) => setPasswordConfirm(e.target.value)}
+          <PasswordInput
+            setter={setPasswordConfirm}
           />
           <button className='my-5 bg-yellow-300 py-2 rounded-md'>Continue</button>
         </div>
