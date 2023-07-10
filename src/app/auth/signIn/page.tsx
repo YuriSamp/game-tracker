@@ -48,7 +48,7 @@ const SignIn = () => {
             <Image src={Pacman} alt='Pacman' width={30} />
             <p className='text-3xl font-medium'>Game tracker</p>
           </div>
-          <p className='my-7 font-medium'>Entre para ver suas preferencias</p>
+          <p className='my-7 font-medium'>Sign In to see your favorite games</p>
           <label className='self-start'> Email</label>
           <input
             className='mb-6 mt-1 border outline-none border-black rounded-md p-2'
@@ -58,8 +58,8 @@ const SignIn = () => {
           <PasswordInput
             setter={setPassword}
           />
-          <button className='my-5 bg-yellow-300 py-2 rounded-md'>Continue</button>
-          <p className='self-start'>No account? <Link href={'./signUp'} className='underline text-red-800'>Sign up</Link></p>
+          <button className='my-5 bg-yellow-300 py-2 rounded-md'>Sign In</button>
+          <p className='self-start'>Dont have an account? <Link href={'./signUp'} className='underline text-red-800'>Sign up</Link></p>
         </div>
       </form>
     </>

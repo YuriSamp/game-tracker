@@ -48,7 +48,7 @@ const SignUp = () => {
             <Image src={Pacman} alt='Pacman' width={30} />
             <p className='text-3xl font-medium'>Game tracker</p>
           </div>
-          <p className='my-7 font-medium'>Crie um usuario para salvar suas preferencias</p>
+          <p className='my-7 font-medium'>Create a user to save your favorite games</p>
           <label className='self-start'> Email</label>
           <input
             className='mb-6 mt-1 border outline-none border-black rounded-md p-2'
@@ -62,7 +62,7 @@ const SignUp = () => {
           <PasswordInput
             setter={setPasswordConfirm}
           />
-          <button className='my-5 bg-yellow-300 py-2 rounded-md'>Continue</button>
+          <button className='my-5 bg-yellow-300 py-2 rounded-md'>Register</button>
         </div>
       </form>
     </>
