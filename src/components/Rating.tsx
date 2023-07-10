@@ -2,8 +2,8 @@
 import { GameRanked } from '@/types/gameApi'
 import { Dispatch, SetStateAction, } from 'react'
 import { BsHeart, BsHeartFill, BsStar, BsStarFill } from 'react-icons/bs'
-import { parseCookies } from 'nookies';
 import { useDb } from '@/hooks/useDb';
+import { getJWT } from '@/lib/auth/gettJWT';
 
 type Props = {
   favorite: boolean
@@ -19,46 +19,43 @@ export const Rating = ({ games, setGames, id, favorite, gameReview, setModalIsOp
   const stars = new Array(4).fill('')
   const { addToDb } = useDb()
 
-
-  const hasPermission = () => {
-    const cookies = parseCookies()
-
-    if (cookies.JWTAuth === undefined) {
-      setModalIsOpen(true)
-      throw Error("No permission")
-    }
-  }
-
   const handleFavoriteGame = () => {
-    hasPermission()
+    const JWT = getJWT()
+    if (JWT === undefined) {
+      setModalIsOpen(true)
+      return
+    }
 
     const favoiriteGames = games.map(game => {
       if (game.id === id) {
         game.favorite = !game.favorite
       }
       return game
-    }
-    )
-    setGames(favoiriteGames)
+    })
 
+    setGames(favoiriteGames)
     const favorite = favoiriteGames.filter(game => game.id === id)[0].favorite
-    addToDb(favorite, gameReview, id)
+    addToDb(favorite, gameReview, id, JWT)
   }
 
   const handleRating = (value: number) => {
-    hasPermission()
+
+    const JWT = getJWT()
+    if (JWT === undefined) {
+      setModalIsOpen(true)
+      return
+    }
 
     const favoiriteGames = games.map(game => {
       if (game.id === id) {
         game.gameReview = value
       }
       return game
-    }
-    )
-    setGames(favoiriteGames)
+    })
 
+    setGames(favoiriteGames)
     const gameReview = favoiriteGames.filter(game => game.id === id)[0].gameReview
-    addToDb(favorite, gameReview, id)
+    addToDb(favorite, gameReview, id, JWT)
   }
 
   return (

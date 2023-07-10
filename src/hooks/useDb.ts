@@ -1,38 +1,76 @@
 import {
-  addDoc,
+  setDoc,
   collection,
-  updateDoc,
   doc,
-  getDoc,
+  updateDoc,
   getDocs,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
-import { useState } from 'react';
+import { getJWT } from '@/lib/auth/gettJWT';
+import { useCallback, useEffect, useState } from 'react';
+
+type dbType = {
+  favorite: boolean;
+  gameReview: number;
+  id: number;
+  JWT: string;
+};
+
+const INITIAL_STATE_DATA: any[] = [];
 
 export const useDb = () => {
-  // const [cache, setCache] = useState<string[]>([]);
+  const [firestoreGames, setFirestoreGames] = useState<dbType[] | undefined>(
+    INITIAL_STATE_DATA
+  );
+
   const gamesColletionRef = collection(db, 'games');
 
-  const getDocsFromDb = async () => {
-    const games = await getDocs(gamesColletionRef);
-    console.log(games.docs.map((doc) => doc.data));
-  };
-
-  const addToDb = async (favorite: boolean, gameReview: number, id: number) => {
-    const dbEntry = {
-      favorite,
-      gameReview,
-      id,
-    };
-
+  const getDbValues = useCallback(async () => {
     try {
-      const res = await addDoc(gamesColletionRef, dbEntry);
-      console.log(res.id);
-      // setCache((prev) => [...prev, res.id]);
-      // console.log(cache);
-      return;
-    } catch (error) {}
-  };
+      const JWT = getJWT();
+      if (JWT === undefined) {
+        setFirestoreGames(undefined);
+      }
 
-  return { addToDb, getDocsFromDb };
+      const dbGames = await getDocs(gamesColletionRef);
+
+      setFirestoreGames(
+        dbGames?.docs
+          .map((doc) => doc.data())
+          .filter((doc) => doc.JWT === JWT) as unknown as dbType[]
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }, [gamesColletionRef]);
+
+  const addToDb = useCallback(
+    async (favorite: boolean, gameReview: number, id: number, JWT: string) => {
+      const dbEntry = {
+        favorite,
+        gameReview,
+        id,
+        JWT,
+      };
+
+      try {
+        if (firestoreGames?.filter((game) => game.id === id).length === 1) {
+          const docId = firestoreGames?.filter((game) => game.id === id)[0].id;
+          await updateDoc(doc(db, 'games', String(docId)), dbEntry);
+          return;
+        }
+
+        await setDoc(doc(db, 'games', String(id)), dbEntry);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [firestoreGames]
+  );
+
+  useEffect(() => {
+    getDbValues();
+  }, [getDbValues]);
+
+  return { firestoreGames, addToDb };
 };
