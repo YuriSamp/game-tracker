@@ -53,7 +53,7 @@ export default function Home() {
         }
         return game
       })
-      setGames(newData2)
+      setGames(newData)
       setErrorMensage(error)
     }
 

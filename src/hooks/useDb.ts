@@ -23,9 +23,8 @@ export const useDb = () => {
     INITIAL_STATE_DATA
   );
 
-  const gamesColletionRef = collection(db, 'games');
-
   const getDbValues = useCallback(async () => {
+    const gamesColletionRef = collection(db, 'games');
     try {
       const JWT = getJWT();
       if (JWT === undefined) {
@@ -42,7 +41,7 @@ export const useDb = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [gamesColletionRef]);
+  }, []);
 
   const addToDb = useCallback(
     async (favorite: boolean, gameReview: number, id: number, JWT: string) => {
