@@ -8,6 +8,8 @@ import { RetturnButton } from '@/components/ReturnButton'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import { signInForm } from '@/lib/validations/authForm'
+import { toast } from 'react-toastify'
+import PasswordInput from '@/components/PasswordInput'
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -21,6 +23,7 @@ const SignIn = () => {
     const credentials = signInForm.parse({ email, password })
     await login(credentials.email, credentials.password)
     if (error) {
+      toast.error(error)
       return
     }
     router.push('/')
@@ -45,9 +48,8 @@ const SignIn = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           <label className='self-start'> Password</label>
-          <input
-            className='mb-6 mt-1 border outline-none border-black rounded-md p-2'
-            onChange={(e) => setPassword(e.target.value)}
+          <PasswordInput
+            setter={setPassword}
           />
           <button className='my-5 bg-yellow-300 py-2 rounded-md'>Continue</button>
           <p className='self-start'>No account? <Link href={'./signUp'} className='underline text-red-800'>Sign up</Link></p>

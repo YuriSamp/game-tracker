@@ -7,6 +7,8 @@ import { RetturnButton } from '@/components/ReturnButton'
 import { signUpForm } from '@/lib/validations/authForm'
 import { useAuth } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
+import PasswordInput from '@/components/PasswordInput'
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -20,6 +22,7 @@ const SignUp = () => {
     const credentials = signUpForm.parse({ email, password, passwordConfirm })
     await createUser(credentials.email, credentials.password)
     if (error) {
+      toast.error(error)
       return
     }
     router.push('/')
