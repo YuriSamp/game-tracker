@@ -4,7 +4,6 @@ import * as Dialog from '@radix-ui/react-dialog';
 import Link from 'next/link';
 import { Switch } from './Switch';
 
-
 type Props = {
   isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
@@ -15,7 +14,7 @@ type SidebarProps = {
   setDarkMode: Dispatch<SetStateAction<boolean>>
 }
 
-const Sidebar = ({ setDarkMode }: SidebarProps) => {
+export const MobileDialog = ({ setDarkMode }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <div className='flex sm:hidden'>
@@ -31,9 +30,7 @@ const Sidebar = ({ setDarkMode }: SidebarProps) => {
   )
 }
 
-export default Sidebar
-
-export const DialogComponent = ({ isOpen, setIsOpen, setDarkMode }: Props) => (
+const DialogComponent = ({ isOpen, setIsOpen, setDarkMode }: Props) => (
   <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
     <Dialog.Portal>
       <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0 text-black" />
