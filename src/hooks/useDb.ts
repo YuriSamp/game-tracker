@@ -1,82 +1,56 @@
-import {
-  setDoc,
-  collection,
-  doc,
-  updateDoc,
-  getDocs,
-  FirestoreError,
-} from 'firebase/firestore';
+import { setDoc, doc, FirestoreError, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
-import { getJWT } from '@/lib/auth/gettJWT';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from './useAuth';
 
-type dbType = {
-  favorite: boolean;
-  gameReview: number;
-  id: number;
-  JWT: string;
+type userPreferences = {
+  [key: number]: {
+    favorite: boolean;
+    gameReview: number;
+  };
 };
 
-const INITIAL_STATE_DATA: dbType[] = [];
-
 export const useDb = () => {
-  const [firestoreGames, setFirestoreGames] = useState<dbType[] | undefined>(
-    INITIAL_STATE_DATA
-  );
+  const [userPreferences, setUserPreferneces] = useState<userPreferences>({});
   const [firestoreError, setfirestoreError] = useState<FirestoreError>();
+  const { user } = useAuth();
 
-  const getDbValues = useCallback(async () => {
-    const gamesColletionRef = collection(db, 'games');
+  const saveUserPreferences = async (
+    id: number,
+    gamePrefernece: { favorite: boolean; gameReview: number },
+    preferences: userPreferences
+  ) => {
+    const dbEntry = {
+      ...preferences,
+      [id]: gamePrefernece,
+    };
+
     try {
-      const JWT = getJWT();
-      if (JWT === undefined) {
-        setFirestoreGames(undefined);
-      }
-
-      const dbGames = await getDocs(gamesColletionRef);
-
-      setFirestoreGames(
-        dbGames?.docs
-          .map((doc) => doc.data())
-          .filter((doc) => doc.JWT === JWT) as unknown as dbType[]
-      );
+      await setDoc(doc(db, 'userPreferences', user), dbEntry);
+      setUserPreferneces(dbEntry);
     } catch (error) {
       setfirestoreError(error as FirestoreError);
     }
-  }, []);
-
-  const addToDb = useCallback(
-    async (favorite: boolean, gameReview: number, id: number, JWT: string) => {
-      const dbEntry = {
-        favorite,
-        gameReview,
-        id,
-        JWT,
-      };
-
-      try {
-        if (
-          firestoreGames?.filter((game) => game.id === id && game.JWT === JWT)
-            .length === 1
-        ) {
-          const docId = firestoreGames?.filter((game) => game.id === id)[0].id;
-          const firebaseDocID = String(docId) + JWT.slice(-10, -1);
-          await updateDoc(doc(db, 'games', firebaseDocID), dbEntry);
-          return;
-        }
-
-        const firebaseDocID = String(id) + JWT.slice(-10, -1);
-        await setDoc(doc(db, 'games', firebaseDocID), dbEntry);
-      } catch (error) {
-        setfirestoreError(error as FirestoreError);
-      }
-    },
-    [firestoreGames]
-  );
+  };
 
   useEffect(() => {
-    getDbValues();
-  }, [getDbValues]);
+    const getGames = async () => {
+      const docRef = doc(db, 'userPreferences', user);
+      const _userPreferences = await getDoc(docRef);
 
-  return { firestoreGames, addToDb, firestoreError };
+      if (_userPreferences.exists()) {
+        setUserPreferneces(_userPreferences.data());
+      }
+    };
+
+    if (user) {
+      getGames();
+    }
+  }, [user]);
+
+  return {
+    userPreferences,
+    saveUserPreferences,
+    firestoreError,
+  };
 };

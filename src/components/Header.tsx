@@ -1,31 +1,25 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useMemo } from 'react'
 import { Switch } from './Switch'
 import Link from 'next/link'
 import { MobileDialog } from './MobileDialog'
 import { PacmanEats } from './Pacman'
-import { getJWT } from '@/lib/auth/gettJWT'
-import { destroyCookie } from 'nookies'
+import { auth } from '@/lib/firebase/config';
+import { useAuth } from '@/hooks/useAuth'
 
 type Props = {
   setDarkMode: Dispatch<SetStateAction<boolean>>
 }
 
 export const Header = ({ setDarkMode }: Props) => {
+  const { user } = useAuth()
 
-  const [isLoged, setIsLoged] = useState(false)
-
-  useEffect(() => {
-    const JWT = getJWT()
-    if (JWT !== undefined) {
-      setIsLoged(true)
-    }
-  }, [])
+  const isLoged = useMemo(() => {
+    return !!user
+  }, [user])
 
   const signOut = () => {
-    destroyCookie(null, 'JWTAuth')
-    setIsLoged(false)
+    auth.signOut()
   }
-
 
   return (
     <>

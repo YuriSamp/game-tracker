@@ -1,65 +1,38 @@
 
-import { GameRanked } from '@/types/gameApi'
 import { Dispatch, SetStateAction, } from 'react'
 import { BsHeart, BsHeartFill, BsStar, BsStarFill } from 'react-icons/bs'
-import { useDb } from '@/hooks/useDb';
-import { getJWT } from '@/lib/auth/gettJWT';
+import { useAuth } from '@/hooks/useAuth';
+import { Rating as RatingType } from '@/types/gameApi';
 
 type Props = {
   favorite: boolean
   gameReview: number
-  games: GameRanked[]
-  setGames: Dispatch<SetStateAction<GameRanked[]>>
   setModalIsOpen: Dispatch<SetStateAction<boolean>>
   id: number
+  handleSavePreferences: (id: number, gamePreference: RatingType) => void
 }
 
-export const Rating = ({ games, setGames, id, favorite, gameReview, setModalIsOpen }: Props) => {
+export const Rating = ({ id, favorite, gameReview, setModalIsOpen, handleSavePreferences }: Props) => {
 
   const stars = new Array(4).fill('')
-  const { addToDb } = useDb()
+  const { user } = useAuth()
 
   const handleFavoriteGame = () => {
-    const JWT = getJWT()
-    if (JWT === undefined) {
+    if (!user) {
       setModalIsOpen(true)
       return
     }
 
-    const favoiriteGames = games.map(game => {
-      if (game.id === id) {
-        game.favorite = !game.favorite
-      }
-      return game
-    })
-
-    setGames(favoiriteGames)
-    const favorite = favoiriteGames.filter(game => game.id === id)[0].favorite
-    addToDb(favorite, gameReview, id, JWT)
+    handleSavePreferences(id, { gameReview, favorite: !favorite })
   }
 
   const handleRating = (value: number) => {
-
-    const JWT = getJWT()
-    if (JWT === undefined) {
+    if (!user) {
       setModalIsOpen(true)
       return
     }
 
-    const favoiriteGames = games.map(game => {
-      if (game.id === id) {
-        if (game.gameReview === value) {
-          game.gameReview = 0
-        } else {
-          game.gameReview = value
-        }
-      }
-      return game
-    })
-
-    setGames(favoiriteGames)
-    const gameReview = favoiriteGames.filter(game => game.id === id)[0].gameReview
-    addToDb(favorite, gameReview, id, JWT)
+    handleSavePreferences(id, { gameReview: value === gameReview ? 0 : value, favorite })
   }
 
   return (

@@ -16,3 +16,8 @@ export interface GameRanked extends Game {
   favorite: boolean;
   gameReview: number;
 }
+
+export interface Rating {
+  favorite: boolean;
+  gameReview: number;
+}

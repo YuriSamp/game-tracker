@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Game, GameRanked } from '@/types/gameApi'
+import { Game, GameRanked, Rating } from '@/types/gameApi'
 import { useRequest } from '@/hooks/useRequest'
 import { Card } from '@/components/Card'
 import { Button } from '@/components/Button'
@@ -11,13 +11,12 @@ import { Loading } from '@/components/Loading'
 import { RatingFilter } from '@/components/RatingFilter'
 import { Dialog } from '@/components/Dialog'
 import { useDb } from '@/hooks/useDb'
-import { getJWT } from '@/lib/auth/gettJWT'
 import { Header } from '@/components/Header'
+import { auth } from '@/lib/firebase/config';
 
 export default function Home() {
 
   const [searchTerm, setSearchTerm] = useState('')
-  const [games, setGames] = useState<GameRanked[]>([])
   const [errorMensage, setErrorMensage] = useState('')
   const [filteredGenre, setFilteredGenre] = useState<string>('')
   const [favorite, setFavorite] = useState(false)
@@ -25,45 +24,16 @@ export default function Home() {
   const [ranked, setRanked] = useState(true)
   const [modalIsOpen, setModalIsOpen] = useState(false)
 
-  const { data, error, isLoading, refetch } = useRequest<Game[]>('/data')
-  const { firestoreGames, firestoreError } = useDb()
+  const { data: games, error, isLoading, refetch } = useRequest<Game[]>('/data')
+  const { userPreferences, saveUserPreferences } = useDb()
+
+  const handleSavePreferences = useCallback((id: number, gamePreference: Rating) => {
+    saveUserPreferences(id, gamePreference, userPreferences)
+  }, [saveUserPreferences, userPreferences])
 
   useEffect(() => {
-    const setData = async () => {
-      const newData = data.map(property => {
-        return {
-          ...property,
-          favorite: false,
-          gameReview: 0,
-        }
-      })
-
-      if (firestoreGames === undefined) {
-        setGames(newData)
-        setErrorMensage(error)
-        return
-      }
-
-      const newData2 = newData.map(game => {
-        for (let i = 0; i < firestoreGames.length; i++) {
-          if (game.id === firestoreGames[i].id) {
-            game.favorite = firestoreGames[i].favorite
-            game.gameReview = firestoreGames[i].gameReview
-          }
-        }
-        return game
-      })
-      setGames(newData2)
-
-      setErrorMensage(error)
-      if (firestoreError) {
-        setErrorMensage(firestoreError.message)
-      }
-    }
-
-    setData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, error])
+    setErrorMensage(error)
+  }, [error])
 
   const genres = useMemo(() => {
     return ['', ...Array.from(new Set(games.map(game => game.genre)))]
@@ -72,7 +42,13 @@ export default function Home() {
   const filteredGames = useMemo(() => {
     const lowerSearchTerm = searchTerm.toLocaleLowerCase()
 
-    const _filteredGames = games.filter(game => {
+    const _gamesWithUserPreferences = games.map(game => ({
+      ...game,
+      favorite: userPreferences[game.id]?.favorite || false,
+      gameReview: userPreferences[game.id]?.gameReview || 0
+    }))
+
+    const _filteredGames = _gamesWithUserPreferences.filter(game => {
       return game.title.toLocaleLowerCase().includes(lowerSearchTerm)
         && game.genre.includes(filteredGenre)
     }).sort((a, b) => ranked ? b.gameReview - a.gameReview : a.gameReview - b.gameReview)
@@ -83,7 +59,7 @@ export default function Home() {
 
     return _filteredGames
 
-  }, [games, searchTerm, filteredGenre, favorite, ranked])
+  }, [games, searchTerm, filteredGenre, favorite, ranked, userPreferences])
 
   const handleSelectGenre = useCallback((genre: string) => {
     setFilteredGenre(genre)
@@ -102,14 +78,28 @@ export default function Home() {
 
 
   const onlyFavorite = () => {
-    const JWT = getJWT()
-    if (JWT === undefined) {
+    if (!auth.currentUser) {
       setModalIsOpen(true)
       return
     }
 
     setFavorite(prev => !prev)
   }
+
+  const renderCards = useCallback((game: GameRanked) => (
+    <Card
+      key={game.id}
+      id={game.id}
+      title={game.title}
+      thumbnail={game.thumbnail}
+      short_description={game.short_description}
+      genre={game.genre}
+      favorite={game.favorite}
+      gameReview={game.gameReview}
+      setModalIsOpen={setModalIsOpen}
+      handleSavePreferences={handleSavePreferences}
+    />
+  ), [setModalIsOpen, handleSavePreferences])
 
   return (
     <main className={darkMode ? 'dark' : ''}>
@@ -150,21 +140,7 @@ export default function Home() {
         }
         {!Boolean(errorMensage) ?
           <section className='my-8 grid gap-10 lg:grid-cols-2 3xl:grid-cols-3 max-w-[1330px] '>
-            {filteredGames.map(item => (
-              <Card
-                key={item.id}
-                id={item.id}
-                title={item.title}
-                thumbnail={item.thumbnail}
-                short_description={item.short_description}
-                genre={item.genre}
-                games={games}
-                setGames={setGames}
-                favorite={item.favorite}
-                gameReview={item.gameReview}
-                setModalIsOpen={setModalIsOpen}
-              />
-            ))}
+            {filteredGames.map(renderCards)}
           </section>
           :
           <section className=' mb-10 mt-20 flex flex-col items-center text-center mx-48 gap-10'>

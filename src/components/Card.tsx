@@ -1,4 +1,4 @@
-import { GameRanked } from '@/types/gameApi'
+import { GameRanked, Rating as RatingType } from '@/types/gameApi'
 import Image from 'next/image'
 import { Dispatch, SetStateAction, useMemo } from 'react'
 import stc from 'string-to-color'
@@ -8,19 +8,17 @@ import { Rating } from './Rating'
 type gameProps = Pick<GameRanked, 'thumbnail' | 'title' | 'genre' | 'short_description' | 'id' | 'favorite' | 'gameReview'>
 
 interface CardProps extends gameProps {
-  games: GameRanked[]
-  setGames: Dispatch<SetStateAction<GameRanked[]>>
   setModalIsOpen: Dispatch<SetStateAction<boolean>>
+  handleSavePreferences: (id: number, gamePreference: RatingType) => void
 }
 
-export const Card = ({ thumbnail, title, genre, short_description, games, setGames, id, favorite, gameReview, setModalIsOpen }: CardProps) => {
+export const Card = ({ thumbnail, title, genre, short_description, id, favorite, gameReview, setModalIsOpen, handleSavePreferences }: CardProps) => {
 
   const [bgColor, textColor] = useMemo(() => {
     const _bgColor = stc(genre)
     const _textColor: string = fontColorContrast(_bgColor)
     return [_bgColor, _textColor]
   }, [genre])
-
 
   return (
     <div className='w-[300px] xl:w-[350px] flex flex-col items-center justify-between rounded-xl py-5 px-5 text-lg bg-white shadow-xl dark:bg-[#FDFDED] text-black relative select-none`'>
@@ -41,11 +39,10 @@ export const Card = ({ thumbnail, title, genre, short_description, games, setGam
       <div className='items-end flex justify-between w-full mt-3'>
         <Rating
           id={id}
-          games={games}
-          setGames={setGames}
           favorite={favorite}
           gameReview={gameReview}
           setModalIsOpen={setModalIsOpen}
+          handleSavePreferences={handleSavePreferences}
         />
       </div>
     </div>

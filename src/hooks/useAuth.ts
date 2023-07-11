@@ -2,33 +2,20 @@ import {
   AuthError,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  UserCredential,
+  setPersistence,
+  browserLocalPersistence,
 } from 'firebase/auth';
-
 import { auth } from '@/lib/firebase/config';
-import { setCookie } from 'nookies';
-import { useCallback, useState } from 'react';
-
-const createCookie = (JWT: string) => {
-  setCookie(null, 'JWTAuth', JWT as string, {
-    maxAge: 30 * 24 * 60 * 60,
-    path: '/',
-  });
-};
+import { useCallback, useEffect, useState } from 'react';
 
 export const useAuth = () => {
   const [error, setError] = useState<AuthError>();
-  const [user, setUser] = useState<UserCredential>();
+  const [user, setUser] = useState('');
 
   const createUser = useCallback(async (email: string, password: string) => {
     setError(undefined);
     try {
-      const user = await createUserWithEmailAndPassword(auth, email, password);
-      const JWT = await user?.user.getIdToken();
-      createCookie(JWT);
-      setUser(user);
-
-      return user;
+      await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
       setError(error as AuthError);
     }
@@ -36,16 +23,22 @@ export const useAuth = () => {
 
   const login = useCallback(async (email: string, password: string) => {
     setError(undefined);
-    try {
-      const user = await signInWithEmailAndPassword(auth, email, password);
-      const JWT = await user?.user.getIdToken();
-      createCookie(JWT);
-      setUser(user);
 
-      return user;
-    } catch (err) {
-      setError(err as AuthError);
-    }
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, email, password);
+      })
+      .catch((err) => {
+        console.log({ authError: err });
+      });
+  }, []);
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user?.uid) {
+        setUser(user?.uid);
+      }
+    });
   }, []);
 
   return { login, createUser, user, error };

@@ -15,8 +15,6 @@ const fontHeading = localFont({
   variable: "--array-heading",
 })
 
-
-
 export default function RootLayout({
   children,
 }: {
