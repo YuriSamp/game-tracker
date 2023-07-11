@@ -17,7 +17,7 @@ const createCookie = (JWT: string) => {
 };
 
 export const useAuth = () => {
-  const [error, setError] = useState<any>();
+  const [error, setError] = useState<AuthError>();
   const [user, setUser] = useState<UserCredential>();
 
   const createUser = useCallback(async (email: string, password: string) => {

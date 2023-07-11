@@ -30,7 +30,7 @@ const SignIn = () => {
 
     await login(credentials.data.email, credentials.data.password)
     if (error) {
-      toast.error(error)
+      toast.error(error.message)
       return
     }
     router.push('/')

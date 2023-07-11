@@ -26,7 +26,7 @@ export default function Home() {
   const [modalIsOpen, setModalIsOpen] = useState(false)
 
   const { data, error, isLoading, refetch } = useRequest<Game[]>('/data')
-  const { firestoreGames } = useDb()
+  const { firestoreGames, firestoreError } = useDb()
 
   useEffect(() => {
     const setData = async () => {
@@ -54,7 +54,11 @@ export default function Home() {
         return game
       })
       setGames(newData2)
+
       setErrorMensage(error)
+      if (firestoreError) {
+        setErrorMensage(firestoreError.message)
+      }
     }
 
     setData()

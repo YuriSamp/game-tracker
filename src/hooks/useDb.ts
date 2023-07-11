@@ -4,6 +4,7 @@ import {
   doc,
   updateDoc,
   getDocs,
+  FirestoreError,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { getJWT } from '@/lib/auth/gettJWT';
@@ -16,12 +17,13 @@ type dbType = {
   JWT: string;
 };
 
-const INITIAL_STATE_DATA: any[] = [];
+const INITIAL_STATE_DATA: dbType[] = [];
 
 export const useDb = () => {
   const [firestoreGames, setFirestoreGames] = useState<dbType[] | undefined>(
     INITIAL_STATE_DATA
   );
+  const [firestoreError, setfirestoreError] = useState<FirestoreError>();
 
   const getDbValues = useCallback(async () => {
     const gamesColletionRef = collection(db, 'games');
@@ -39,7 +41,7 @@ export const useDb = () => {
           .filter((doc) => doc.JWT === JWT) as unknown as dbType[]
       );
     } catch (error) {
-      console.log(error);
+      setfirestoreError(error as FirestoreError);
     }
   }, []);
 
@@ -66,7 +68,7 @@ export const useDb = () => {
         const firebaseDocID = String(id) + JWT.slice(-10, -1);
         await setDoc(doc(db, 'games', firebaseDocID), dbEntry);
       } catch (error) {
-        console.log(error);
+        setfirestoreError(error as FirestoreError);
       }
     },
     [firestoreGames]
@@ -76,5 +78,5 @@ export const useDb = () => {
     getDbValues();
   }, [getDbValues]);
 
-  return { firestoreGames, addToDb };
+  return { firestoreGames, addToDb, firestoreError };
 };
