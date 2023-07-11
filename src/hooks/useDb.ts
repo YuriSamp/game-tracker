@@ -10,6 +10,8 @@ type userPreferences = {
   };
 };
 
+const collection = 'userPreferences';
+
 export const useDb = () => {
   const [userPreferences, setUserPreferneces] = useState<userPreferences>({});
   const [firestoreError, setfirestoreError] = useState<FirestoreError>();
@@ -26,7 +28,7 @@ export const useDb = () => {
     };
 
     try {
-      await setDoc(doc(db, 'userPreferences', user), dbEntry);
+      await setDoc(doc(db, collection, user), dbEntry);
       setUserPreferneces(dbEntry);
     } catch (error) {
       setfirestoreError(error as FirestoreError);
@@ -35,7 +37,7 @@ export const useDb = () => {
 
   useEffect(() => {
     const getGames = async () => {
-      const docRef = doc(db, 'userPreferences', user);
+      const docRef = doc(db, collection, user);
       const _userPreferences = await getDoc(docRef);
 
       if (_userPreferences.exists()) {
