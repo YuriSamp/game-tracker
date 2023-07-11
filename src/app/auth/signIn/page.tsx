@@ -43,7 +43,7 @@ const SignIn = () => {
       </div>
       <form className='h-[90vh] flex flex-col justify-center'
         onSubmit={handleAuth}>
-        <div className=' bg-white shadow-2xl rounded-xl flex flex-col py-5 px-7 text-center w-[350px]'>
+        <div className=' bg-white shadow-2xl rounded-xl flex flex-col py-5 px-4 sm:px-7 text-center w-[290px] sm:w-[350px]'>
           <div className='flex gap-3'>
             <Image src={Pacman} alt='Pacman' width={30} />
             <p className='text-3xl font-medium'>Game tracker</p>
