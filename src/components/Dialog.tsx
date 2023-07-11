@@ -21,8 +21,8 @@ export const Dialog = ({ setModalIsOpen, modalIsOpen, }: Props) => (
             <AiOutlineClose className='h-6 w-6 cursor-pointer' />
           </AlertDialog.Cancel>
         </div>
-        <AlertDialog.Description className=" mt-4 mb-5 text-lg leading-normal">
-          Seems like you tried to give a game a score or save in your favorite list,
+        <AlertDialog.Description className="my-6 text-lg leading-normal">
+          Seems like you tried to give a game a score or interact with your favorite list,
           but first you need an account to make this actions
         </AlertDialog.Description>
         <div className="flex justify-center gap-[25px]">

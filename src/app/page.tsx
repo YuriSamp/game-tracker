@@ -15,6 +15,7 @@ import { Dialog } from '@/components/Dialog'
 import { useDb } from '@/hooks/useDb'
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
+import { getJWT } from '@/lib/auth/gettJWT'
 
 export default function Home() {
 
@@ -100,6 +101,12 @@ export default function Home() {
 
 
   const onlyFavorite = () => {
+    const JWT = getJWT()
+    if (JWT === undefined) {
+      setModalIsOpen(true)
+      return
+    }
+
     setFavorite(prev => !prev)
   }
 
