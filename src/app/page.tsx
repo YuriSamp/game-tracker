@@ -103,7 +103,7 @@ export default function Home() {
 
   return (
     <main className={darkMode ? 'dark' : ''}>
-      <div className='flex flex-col items-center min-h-screen text-black dark:text-white  bg-[#f9f5f2]  dark:bg-gray-800 relative max-w-[2000px] px-6 sm:px-20 md:px-52  xl:px-72 2xl:px-80'>
+      <div className='flex flex-col items-center min-h-screen text-black dark:text-white  bg-PrimaryLight  dark:bg-gray-800 relative max-w-[2000px] px-6 sm:px-20 md:px-52  xl:px-72 2xl:px-80'>
         <Header setDarkMode={setDarkMode} />
         <section className='flex flex-col gap-8 items-center mt-12 w-full'>
           <Input
@@ -113,7 +113,7 @@ export default function Home() {
           />
           <div className='flex flex-col sm:flex-row gap-5 sm:gap-10'>
             <button
-              className={`py-3 w-40 border rounded-xl px-6 border-black dark:border-transparent ${favorite ? 'bg-red-500 dark:bg-red-500 text-white' : 'dark:bg-[#f9f5f2]  bg-transparent text-black'} `}
+              className={`py-3 w-40 border rounded-xl px-6 border-black dark:border-transparent ${favorite ? 'bg-red-500 dark:bg-red-500 text-white' : 'dark:bg-PrimaryLight  bg-transparent text-black'} `}
               onClick={onlyFavorite}
             >
               Favorites

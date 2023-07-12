@@ -31,13 +31,13 @@ export const Header = ({ setDarkMode }: Props) => {
           <Switch setDarkMode={setDarkMode} />
           {isLoged ?
             <button
-              className='p-2 hidden sm:flex bg-transparent w-24 items-center justify-center border dark:bg-[#f9f5f2] text-black rounded-xl  border-black dark:border-transparent'
+              className='p-2 hidden sm:flex bg-transparent w-24 items-center justify-center border dark:bg-PrimaryLight text-black rounded-xl  border-black dark:border-transparent'
               onClick={() => signOut()}
             >
               Sign Out
             </button>
             :
-            <Link href={'/auth/signIn'} className='p-2 hidden sm:flex bg-transparent w-24 items-center justify-center border dark:bg-[#f9f5f2] text-black rounded-xl  border-black dark:border-transparent'>Sign In</Link>
+            <Link href={'/auth/signIn'} className='p-2 hidden sm:flex bg-transparent w-24 items-center justify-center border dark:bg-PrimaryLight text-black rounded-xl  border-black dark:border-transparent'>Sign In</Link>
           }
         </div>
         <div className='flex sm:hidden'>
