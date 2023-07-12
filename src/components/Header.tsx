@@ -1,10 +1,11 @@
-import React, { Dispatch, SetStateAction, useMemo } from 'react'
+import React, { Dispatch, SetStateAction, useMemo, } from 'react'
 import { Switch } from './Switch'
 import Link from 'next/link'
 import { MobileDialog } from './MobileDialog'
 import { PacmanEats } from './Pacman'
 import { auth } from '@/lib/firebase/config';
 import { useAuth } from '@/hooks/useAuth'
+import { signOut as FirebaseSignOut } from 'firebase/auth'
 
 type Props = {
   setDarkMode: Dispatch<SetStateAction<boolean>>
@@ -17,8 +18,12 @@ export const Header = ({ setDarkMode }: Props) => {
     return !!user
   }, [user])
 
-  const signOut = () => {
-    auth.signOut()
+  const signOut = async () => {
+    try {
+      await FirebaseSignOut(auth)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -32,7 +37,7 @@ export const Header = ({ setDarkMode }: Props) => {
           {isLoged ?
             <button
               className='p-2 hidden sm:flex bg-transparent w-24 items-center justify-center border dark:bg-PrimaryLight text-black rounded-xl  border-black dark:border-transparent'
-              onClick={() => signOut()}
+              onClick={async () => signOut()}
             >
               Sign Out
             </button>
