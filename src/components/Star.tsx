@@ -11,7 +11,7 @@ type Props = {
 
 const Star = ({ handleRating, rating, gameReview, favorite }: Props) => {
 
-  const fill = rating < gameReview
+  const fill = rating <= gameReview
   return (
     fill ?
       <BsStarFill
