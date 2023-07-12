@@ -29,7 +29,7 @@ export const useAuth = () => {
         return signInWithEmailAndPassword(auth, email, password);
       })
       .catch((err) => {
-        console.log({ authError: err });
+        setError(err);
       });
   }, []);
 

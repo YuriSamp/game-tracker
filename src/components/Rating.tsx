@@ -1,8 +1,9 @@
 
 import { Dispatch, SetStateAction, } from 'react'
-import { BsHeart, BsHeartFill, BsStar, BsStarFill } from 'react-icons/bs'
+import { BsStar, BsStarFill } from 'react-icons/bs'
 import { useAuth } from '@/hooks/useAuth';
 import { Rating as RatingType } from '@/types/gameApi';
+import Heart from './Heart';
 
 type Props = {
   favorite: boolean
@@ -17,50 +18,35 @@ export const Rating = ({ id, favorite, gameReview, setModalIsOpen, handleSavePre
   const stars = new Array(4).fill('')
   const { user } = useAuth()
 
-  const handleFavoriteGame = () => {
+
+  const handleRating = (preference: RatingType) => {
     if (!user) {
       setModalIsOpen(true)
       return
     }
 
-    handleSavePreferences(id, { gameReview, favorite: !favorite })
-  }
-
-  const handleRating = (value: number) => {
-    if (!user) {
-      setModalIsOpen(true)
-      return
-    }
-
-    handleSavePreferences(id, { gameReview: value === gameReview ? 0 : value, favorite })
+    handleSavePreferences(id, preference)
   }
 
   return (
     <div className='items-end flex justify-between w-full mt-3'>
-      {favorite ?
-        <BsHeartFill
-          className='w-6 h-6 cursor-pointer text-red-600 hover:animate-wiggle'
-          onClick={handleFavoriteGame}
-        />
-        :
-        <BsHeart
-          className='w-6 h-6 cursor-pointer hover:animate-wiggle'
-          onClick={handleFavoriteGame}
-        />
-      }
+      <Heart
+        handleFavoriteGame={() => handleRating({ gameReview, favorite: !favorite })}
+        favorite={favorite}
+      />
       <div className='flex gap-1'>
         {stars.map((_, i) => (
           i + 1 > gameReview ?
             <BsStar
               key={i}
               className='w-6 h-6 cursor-pointer'
-              onClick={() => handleRating(i + 1)}
+              onClick={() => handleRating({ gameReview: i + 1 === gameReview ? 0 : i + 1, favorite })}
             />
             :
             <BsStarFill
               key={i}
               className='w-6 h-6 text-yellow-400 cursor-pointer'
-              onClick={() => handleRating(i + 1)}
+              onClick={() => handleRating({ gameReview: i + 1 === gameReview ? 0 : i + 1, favorite })}
             />
         ))}
       </div>
