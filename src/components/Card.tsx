@@ -3,7 +3,9 @@ import Image from 'next/image'
 import { Dispatch, SetStateAction, useMemo } from 'react'
 import stc from 'string-to-color'
 import fontColorContrast from 'font-color-contrast'
-import { Rating } from './Rating'
+import { useAuth } from '@/hooks/useAuth'
+import Heart from './Heart'
+import Star from './Star'
 
 type gameProps = Pick<GameRanked, 'thumbnail' | 'title' | 'genre' | 'short_description' | 'id' | 'favorite' | 'gameReview'>
 
@@ -19,6 +21,18 @@ export const Card = ({ thumbnail, title, genre, short_description, id, favorite,
     const _textColor: string = fontColorContrast(_bgColor)
     return [_bgColor, _textColor]
   }, [genre])
+
+  const stars = new Array(4).fill('')
+  const { user } = useAuth()
+
+  const handleRating = (preference: RatingType) => {
+    if (!user) {
+      setModalIsOpen(true)
+      return
+    }
+
+    handleSavePreferences(id, preference)
+  }
 
   return (
     <div className='w-[300px] xl:w-[350px] flex flex-col items-center justify-between rounded-xl py-5 px-5 text-lg bg-white shadow-xl dark:bg-[#FDFDED] text-black relative select-none`'>
@@ -37,13 +51,21 @@ export const Card = ({ thumbnail, title, genre, short_description, id, favorite,
         </p>
       </div>
       <div className='items-end flex justify-between w-full mt-3'>
-        <Rating
-          id={id}
+        <Heart
+          handleFavoriteGame={() => handleRating({ gameReview, favorite: !favorite })}
           favorite={favorite}
-          gameReview={gameReview}
-          setModalIsOpen={setModalIsOpen}
-          handleSavePreferences={handleSavePreferences}
         />
+        <div className='flex gap-1'>
+          {stars.map((_, i) => (
+            <Star
+              key={i}
+              favorite={favorite}
+              gameReview={gameReview}
+              handleRating={handleRating}
+              rating={i + 1}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
