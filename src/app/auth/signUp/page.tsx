@@ -14,7 +14,7 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
-  const { createUser, error } = useAuth()
+  const { createUser } = useAuth()
   const router = useRouter()
 
   const handleAuth = async (e: FormEvent) => {
@@ -28,12 +28,14 @@ const SignUp = () => {
       return
     }
 
-    await createUser(credentials.data.email, credentials.data.password)
-    if (error) {
-      toast.error(error.message)
-      return
+    try {
+      await createUser(credentials.data.email, credentials.data.password)
+      router.push('/')
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message)
+      }
     }
-    router.push('/')
   }
 
 

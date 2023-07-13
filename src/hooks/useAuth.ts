@@ -6,36 +6,28 @@ import {
   browserLocalPersistence,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useAuth = () => {
-  const [error, setError] = useState<AuthError>();
   const [user, setUser] = useState('');
 
-  const createUser = useCallback(async (email: string, password: string) => {
-    setError(undefined);
+  const createUser = async (email: string, password: string) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      setError(error as AuthError);
+      throw error;
     }
-  }, []);
+  };
 
-  const login = useCallback(async (email: string, password: string) => {
-    setError(undefined);
-
-    setPersistence(auth, browserLocalPersistence)
-      .then(async () => {
-        return signInWithEmailAndPassword(auth, email, password).catch(
-          (err) => {
-            setError(err);
-          }
-        );
-      })
-      .catch((err) => {
-        setError(err);
-      });
-  }, []);
+  const login = async (email: string, password: string) => {
+    try {
+      await setPersistence(auth, browserLocalPersistence).then(async () =>
+        signInWithEmailAndPassword(auth, email, password)
+      );
+    } catch (err) {
+      throw err;
+    }
+  };
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -47,5 +39,5 @@ export const useAuth = () => {
     });
   }, []);
 
-  return { login, createUser, user, error };
+  return { login, createUser, user };
 };

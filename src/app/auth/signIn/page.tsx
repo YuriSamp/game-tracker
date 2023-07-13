@@ -14,7 +14,7 @@ import PasswordInput from '@/components/PasswordInput'
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, error } = useAuth()
+  const { login } = useAuth()
   const router = useRouter()
 
 
@@ -28,12 +28,14 @@ const SignIn = () => {
       return
     }
 
-    await login(credentials.data.email, credentials.data.password)
-    if (error) {
-      toast.error(error.message)
-      return
+    try {
+      await login(credentials.data.email, credentials.data.password)
+      router.push('/')
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message)
+      }
     }
-    router.push('/')
   }
 
   return (
