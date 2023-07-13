@@ -25,8 +25,12 @@ export const useAuth = () => {
     setError(undefined);
 
     setPersistence(auth, browserLocalPersistence)
-      .then(() => {
-        return signInWithEmailAndPassword(auth, email, password);
+      .then(async () => {
+        return signInWithEmailAndPassword(auth, email, password).catch(
+          (err) => {
+            setError(err);
+          }
+        );
       })
       .catch((err) => {
         setError(err);

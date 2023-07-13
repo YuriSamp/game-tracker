@@ -16,7 +16,6 @@ export const useDb = () => {
   const [userPreferences, setUserPreferneces] = useState<userPreferences>({});
   const [firestoreError, setfirestoreError] = useState<FirestoreError>();
   const { user } = useAuth();
-  console.log({ useDb: user });
 
   const saveUserPreferences = async (
     id: number,
