@@ -13,6 +13,7 @@ import { Dialog } from '@/components/Dialog'
 import { useDb } from '@/hooks/useDb'
 import { Header } from '@/components/Header'
 import { auth } from '@/lib/firebase/config';
+import { BackToTop } from '@/components/BackToTop'
 
 export default function Home() {
 
@@ -154,6 +155,7 @@ export default function Home() {
             </Button>
           </section>
         }
+        <BackToTop />
       </div>
       <Dialog
         modalIsOpen={modalIsOpen}
