@@ -73,7 +73,7 @@ const DialogComponent = ({ isOpen, setIsOpen, setDarkMode }: Props) => {
               :
               <>
                 <Link href={'/auth/signIn'} >Sign in</Link>
-                <Link href={'/auth/signIn'} >Sign Up</Link>
+                <Link href={'/auth/signUp'} >Sign Up</Link>
               </>
             }
             <Switch setDarkMode={setDarkMode} />

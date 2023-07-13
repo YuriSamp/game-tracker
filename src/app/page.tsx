@@ -14,6 +14,7 @@ import { useDb } from '@/hooks/useDb'
 import { Header } from '@/components/Header'
 import { auth } from '@/lib/firebase/config';
 import { BackToTop } from '@/components/BackToTop'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function Home() {
 
@@ -27,6 +28,7 @@ export default function Home() {
 
   const { data: games, error, isLoading, refetch } = useRequest<Game[]>('/data')
   const { userPreferences, saveUserPreferences } = useDb()
+  const { user } = useAuth()
 
   const handleSavePreferences = useCallback((id: number, gamePreference: Rating) => {
     saveUserPreferences(id, gamePreference, userPreferences)
@@ -35,6 +37,13 @@ export default function Home() {
   useEffect(() => {
     setErrorMensage(error)
   }, [error])
+
+
+  useEffect(() => {
+    if (!user) {
+      setFavorite(false)
+    }
+  }, [user])
 
   const genres = useMemo(() => {
     return ['', ...Array.from(new Set(games.map(game => game.genre)))]
