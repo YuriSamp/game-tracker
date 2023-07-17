@@ -8,7 +8,7 @@ type Props = {
 export const Select = ({ onChange, options, value }: Props) => {
   return (
     <select
-      className='py-3 bg-transparent w-40 border rounded-xl px-6 dark:bg-PrimaryLight  bg-[#020212] text-black border-black dark:border-transparent text-center '
+      className='py-3 bg-transparent w-40 border rounded-xl  dark:bg-PrimaryLight  bg-[#020212] text-black border-black dark:border-transparent text-center '
       onChange={(e) => onChange(e.target.value)}
       value={value}
     >
