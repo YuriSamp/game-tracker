@@ -33,6 +33,7 @@ export default function Home() {
   const handleSavePreferences = useCallback((id: number, gamePreference: Rating) => {
     saveUserPreferences(id, gamePreference, userPreferences)
   }, [saveUserPreferences, userPreferences])
+  
 
   useEffect(() => {
     setErrorMensage(error)
